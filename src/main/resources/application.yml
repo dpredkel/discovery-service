@@ -1,0 +1,39 @@
+server:
+  port: ${PORT:8761}
+
+security:
+  user:
+    name: "{cipher}6c627b546202f13ffa9e3edf39974a3bfca5d615f58dcbfc23065661968b13c5"
+    password: "{cipher}75efd89c7c4d79220a5b3f35e9ad692a69c820fa0b99e9c48ae9433d45ba016db808ab9dce78382235e529291f8aa0be"
+
+# eureka server settings
+eureka:
+  instance:
+    hostname: discovery-service
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+# It's need to add serviceUrl if we want to secure eureka service
+# and to avoid 401 error for the evict task
+# 127.0.0.1:8761 will be secured, and localhost:8761 will be open
+    serviceUrl:
+      defaultZone: http://${security.user.name}:${security.user.password}@127.0.0.1:8761/eureka/
+#      defaultZone: http://${security.user.name}:${security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+
+#client eureka will have this settings:
+#eureka:
+#  user:
+#    name: system
+#    password: "{cipher}75efd89c7c4d79220a5b3f35e9ad692a69c820fa0b99e9c48ae9433d45ba016db808ab9dce78382235e529291f8aa0be"
+#  instance:
+#    preferIpAddress: true
+#  client:
+#    registerWithEureka: true
+#    fetchRegistry: true
+#    serviceUrl:
+# Connect without credentials
+#      defaultZone: ${vcap.services.eureka-service.credentials.uri:http://127.0.0.1:8761}/eureka/
+# Connect with credentials
+#      defaultZone: http://${eureka.user.name}:${eureka.user.password}@127.0.0.1:8761/eureka/
